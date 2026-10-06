@@ -2552,3 +2552,306 @@ button {
     justify-content: center;
   }
 }
+
+/* ═══════════════════════════════════════════════════
+   PATCH: RESPONSIVE + PERFORMANCE (override, taruh paling akhir)
+   ═══════════════════════════════════════════════════ */
+:root {
+  --safe-b: env(safe-area-inset-bottom, 0px);
+}
+
+html {
+  scroll-padding-top: 5rem;
+}
+
+body {
+  overflow-x: clip;
+}
+
+/* Bug: padding samping ganda (section + .section-container) → konten sempit di HP */
+.about,
+.program,
+.speaker,
+.timeline-section,
+.registration,
+.faq-section {
+  padding-inline: 0;
+}
+
+/* Tipografi fluid, konsisten dari 320px sampai desktop */
+.hero-headline {
+  font-size: clamp(2rem, 1.2rem + 4vw, 4rem);
+}
+
+.section-title {
+  font-size: clamp(1.75rem, 1.2rem + 2.6vw, 3rem);
+}
+
+.hl-line {
+  padding-bottom: 0.08em;
+}
+
+/* Preloader: progres via transform */
+.pl-bar {
+  width: 100%;
+  transform-origin: left;
+  transform: scaleX(0);
+  transition: none;
+}
+
+/* Timeline: progres via transform */
+.tl-line-fill {
+  height: 100%;
+  transform: scaleY(var(--p, 0));
+  transform-origin: top;
+  transition: none;
+  will-change: transform;
+}
+
+/* Parallax & glow via properti `translate` (menyatu dengan animasi transform CSS) */
+.blob-1 {
+  translate: 0 calc(var(--sy, 0) * -80px);
+}
+
+.blob-2 {
+  translate: 0 calc(var(--sy, 0) * -50px);
+}
+
+.blob-3 {
+  translate: var(--mx, 0px) var(--my, 0px);
+  transition: translate 3s ease-out;
+}
+
+/* Glass: kilau animasi hanya saat hover (sebelumnya ~25 animasi infinite) */
+.glass-panel::before {
+  animation: none;
+}
+
+.glass-panel:hover::before {
+  animation: fluidGlassMove 12s ease-in-out infinite alternate;
+}
+
+.glass-panel {
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* Render section di bawah layar ditunda sampai mendekati viewport */
+.speaker,
+.registration,
+.faq-section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 700px;
+}
+
+/* FAQ: jangan terpotong di layar sempit */
+.faq-a.open {
+  max-height: 800px;
+}
+
+/* Target sentuh minimal 44px */
+.hamburger {
+  min-width: 44px;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-primary,
+.btn-ghost {
+  min-height: 44px;
+}
+
+.faq-q {
+  min-height: 48px;
+}
+
+/* Perangkat sentuh: tidak ada efek hover yang "menempel" */
+@media (hover: none) {
+  .glass-panel:hover {
+    background: var(--glass-bg);
+    border-color: var(--glass-border);
+    box-shadow: var(--glass-shadow);
+  }
+
+  .glass-panel:hover::before {
+    animation: none;
+  }
+
+  .btn-primary:hover,
+  .btn-ghost:hover,
+  .step-card:hover,
+  .cp-card:hover,
+  .fcta-btn:hover {
+    transform: none;
+  }
+}
+
+@media (min-width: 769px) {
+  .tl-left.reveal-el {
+    transform: translate3d(-28px, 0, 0);
+  }
+
+  .tl-right.reveal-el {
+    transform: translate3d(28px, 0, 0);
+  }
+}
+
+@media (max-width: 768px) {
+
+  /* Efek berat dikurangi, tampilan tetap sama */
+  .glass-panel {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .navbar.scrolled,
+  .mobile-menu {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .blob {
+    filter: blur(50px);
+    animation: none;
+  }
+
+  .blob-1 {
+    width: 420px;
+    height: 420px;
+    top: -140px;
+    right: -140px;
+  }
+
+  .blob-2 {
+    width: 360px;
+    height: 360px;
+    bottom: -80px;
+    left: -140px;
+  }
+
+  .blob-3,
+  .ray {
+    display: none;
+  }
+
+  .section-blob {
+    width: 360px;
+    height: 360px;
+    filter: blur(40px);
+  }
+
+  .footer,
+  .footer-glow {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  /* Timeline: garis tetap tampil & konsisten dengan desktop */
+  .tl-line {
+    display: block;
+    left: 24px;
+    transform: none;
+    top: 24px;
+    bottom: 24px;
+  }
+
+  .tl-item {
+    gap: 1rem;
+  }
+
+  .tl-dot {
+    width: 44px;
+    height: 44px;
+    justify-self: center;
+  }
+
+  /* Countdown & CTA */
+  .countdown-wrap {
+    display: block;
+  }
+
+  .countdown {
+    justify-content: space-between;
+  }
+
+  .cd-label {
+    letter-spacing: 0.04em;
+  }
+
+  .floating-cta {
+    bottom: calc(0.75rem + var(--safe-b));
+  }
+
+  .footer {
+    padding-bottom: calc(5.5rem + var(--safe-b));
+  }
+
+  .mobile-menu {
+    padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
+    max-height: 0;
+  }
+
+  .mobile-menu.open {
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+
+  .program-card,
+  .faq-contact {
+    padding: 1.75rem 1.5rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .nav-container {
+    gap: 1rem;
+  }
+
+  .logo-word {
+    font-size: 1rem;
+  }
+
+  .cd-num {
+    font-size: 1.15rem;
+    min-width: 1.8ch;
+  }
+
+  .section-label {
+    letter-spacing: 0.1em;
+  }
+
+  .program-card,
+  .faq-contact {
+    padding: 1.5rem 1.15rem;
+  }
+}
+
+/* Animasi masuk (dikontrol IntersectionObserver) — taruh terakhir agar menang */
+.reveal-el {
+  opacity: 0;
+  transform: translate3d(0, 28px, 0);
+  transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+  transition-delay: var(--delay, 0s);
+}
+
+.reveal-el.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .reveal-el {
+    opacity: 1;
+    transform: none;
+  }
+}

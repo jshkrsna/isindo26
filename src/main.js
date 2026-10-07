@@ -3,7 +3,6 @@
  * GSAP dipakai hanya untuk preloader & hero. Reveal, navbar, timeline, CTA
  * memakai IntersectionObserver + 1 scroll handler (rAF). Lenis hanya di desktop.
  */
-import Lenis from 'lenis'
 import { gsap } from 'gsap'
 
 const $ = (s, r = document) => r.querySelector(s)
@@ -25,7 +24,20 @@ function initPreloader(onDone) {
   let loaded = document.readyState === 'complete'
   if (!loaded) addEventListener('load', () => (loaded = true), { once: true })
 
-  const min = reduceMotion ? 0 : isTouch ? 1100 : 1800
+  const connection = navigator.connection
+  const capableDevice = navigator.hardwareConcurrency >= 4 && navigator.deviceMemory >= 4
+  const capableConnection = !connection || (
+    !connection.saveData &&
+    !['slow-2g', '2g', '3g'].includes(connection.effectiveType) &&
+    (connection.downlink == null || connection.downlink >= 1.5)
+  )
+  const min = reduceMotion ? 0 : capableDevice && capableConnection ? 3000 : isTouch ? 1100 : 1800
+  const progressWeights = Array.from({ length: 8 }, () => 0.35 + Math.random())
+  const progressTotal = progressWeights.reduce((sum, weight) => sum + weight, 0)
+  const progressStops = [0]
+  progressWeights.forEach((weight) => {
+    progressStops.push(progressStops[progressStops.length - 1] + weight / progressTotal)
+  })
   const t0 = performance.now()
   let shown = -1
 
@@ -41,8 +53,12 @@ function initPreloader(onDone) {
   const step = (now) => {
     if (now - t0 > min + 4000) loaded = true // jaringan lambat: jangan menahan halaman
     const t = min ? clamp((now - t0) / min, 0, 1) : 1
-    const eased = 1 - Math.pow(1 - t, 3)
-    const p = loaded && t >= 1 ? 100 : Math.min(95, Math.round(eased * 100))
+    const progressPosition = t * progressWeights.length
+    const progressIndex = Math.min(Math.floor(progressPosition), progressWeights.length - 1)
+    const progressFraction = t >= 1 ? 1 : progressPosition - progressIndex
+    const progress = progressStops[progressIndex] +
+      (progressStops[progressIndex + 1] - progressStops[progressIndex]) * progressFraction
+    const p = loaded && t >= 1 ? 100 : Math.min(95, Math.round(progress * 100))
     if (p !== shown) {
       shown = p
       bar.style.transform = `scaleX(${p / 100})`
@@ -56,9 +72,15 @@ function initPreloader(onDone) {
 /* 2. LENIS — hanya desktop; di mobile pakai scroll native (lebih halus & hemat) */
 function initLenis() {
   if (isTouch || reduceMotion) return
-  lenis = new Lenis({ duration: 1.1, easing: easeLenis })
-  gsap.ticker.add((t) => lenis.raf(t * 1000))
-  gsap.ticker.lagSmoothing(0)
+  import('lenis')
+    .then(({ default: Lenis }) => {
+      lenis = new Lenis({ duration: 1.1, easing: easeLenis })
+      gsap.ticker.add((t) => lenis.raf(t * 1000))
+      gsap.ticker.lagSmoothing(0)
+    })
+    .catch((error) => {
+      console.error('Lenis gagal dimuat; scroll native tetap digunakan.', error)
+    })
 }
 
 /* 3. ANCHOR LINK — satu listener (event delegation) */
@@ -102,8 +124,10 @@ function initMenu() {
 function initScrollEffects() {
   const navbar = $('#navbar'), cta = $('#floatingCta'), bg = $('.hero-bg')
   const tl = $('#timelineEl'), footer = $('.footer')
+  const tlLine = $('#tlLine')
+  const tlItems = tl ? $$('.tl-item', tl) : []
   let footerVisible = false, ticking = false, lastP = -1
-  let vh = innerHeight, tlTop = 0, tlH = 0, maxScroll = 1
+  let vh = innerHeight, tlTop = 0, tlH = 0, activeTlIndex = -2, maxScroll = 1
 
   const measure = () => {
     vh = innerHeight
@@ -113,6 +137,26 @@ function initScrollEffects() {
       tlTop = r.top + scrollY
       tlH = r.height
     }
+  }
+  const setActiveTimelineItem = (progress) => {
+    if (!tl || !tlLine) return
+    const timelineTop = tl.getBoundingClientRect().top
+    const lineHead = tlLine.getBoundingClientRect().top - timelineTop + tlLine.clientHeight * progress
+    let index = -1
+    for (let i = 0; i < tlItems.length; i++) {
+      const dot = $('.tl-dot', tlItems[i])
+      if (!dot) continue
+      const dotCenter = dot.getBoundingClientRect().top + dot.offsetHeight / 2 - timelineTop
+      if (dotCenter > lineHead) break
+      index = i
+    }
+    if (index === activeTlIndex) return
+    activeTlIndex = index
+    tlItems.forEach((item, i) => {
+      const active = i === index
+      $('.tl-dot', item)?.classList.toggle('active', active)
+      $('.tl-card', item)?.classList.toggle('is-active', active)
+    })
   }
   const update = () => {
     ticking = false
@@ -126,6 +170,7 @@ function initScrollEffects() {
         lastP = p
         tl.style.setProperty('--p', p.toFixed(3))
       }
+      setActiveTimelineItem(p)
     }
     if (bg && !isTouch && !reduceMotion) bg.style.setProperty('--sy', clamp(y / maxScroll, 0, 1).toFixed(3))
   }

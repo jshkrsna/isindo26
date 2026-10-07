@@ -80,7 +80,7 @@ function initAnchors(closeMenu) {
 /* 4. MOBILE MENU — aksesibel (inert saat tertutup), tutup otomatis saat layar melebar */
 function initMenu() {
   const btn = $('#hamburger'), menu = $('#mobileMenu')
-  if (!btn || !menu) return () => {}
+  if (!btn || !menu) return () => { }
   const set = (open) => {
     btn.classList.toggle('active', open)
     btn.setAttribute('aria-expanded', String(open))

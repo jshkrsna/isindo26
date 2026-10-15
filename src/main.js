@@ -122,7 +122,7 @@ function initMenu() {
 
 /* 5. SCROLL EFFECTS — satu handler rAF: navbar, CTA, timeline, parallax */
 function initScrollEffects() {
-  const navbar = $('#navbar'), cta = $('#floatingCta'), bg = $('.hero-bg')
+  const navbar = $('#navbar'), cta = $('#floatingCta')
   const tl = $('#timelineEl'), footer = $('.footer')
   const tlLine = $('#tlLine')
   const tlItems = tl ? $$('.tl-item', tl) : []
@@ -172,7 +172,6 @@ function initScrollEffects() {
       }
       setActiveTimelineItem(p)
     }
-    if (bg && !isTouch && !reduceMotion) bg.style.setProperty('--sy', clamp(y / maxScroll, 0, 1).toFixed(3))
   }
   const onScroll = () => {
     if (!ticking) {
@@ -230,8 +229,8 @@ function initHero() {
   })
   tl.from('.hl-line', { autoAlpha: 0, y: 32, stagger: 0.14, duration: d })
     .from(['.hero-tagline', '.hero-sub'], { autoAlpha: 0, y: 16, stagger: 0.1, duration: 0.55 }, '-=0.5')
-    .from('.vbadge', { autoAlpha: 0, y: 12, stagger: 0.07, duration: 0.4 }, '-=0.3')
-    .from(['.hero-cta-row', '.countdown-wrap'], { autoAlpha: 0, y: 12, stagger: 0.1, duration: 0.5 }, '-=0.2')
+    .from('.hero-cta-row', { autoAlpha: 0, y: 12, duration: 0.4 }, '-=0.3')
+    .from('.countdown-wrap', { autoAlpha: 0, y: 12, duration: 0.4 }, '-=0.2')
   // Visual kanan hanya ada di desktop (display:none di mobile) — jangan dianimasikan
   if ($('.hv-wrapper')?.offsetParent) {
     tl.from('.hv-wrapper', { autoAlpha: 0, x: 40, duration: 0.9 }, '-=0.8')
@@ -243,7 +242,7 @@ function initHero() {
 function initCountdown() {
   const els = ['cdDays', 'cdHours', 'cdMins', 'cdSecs'].map((id) => document.getElementById(id))
   if (els.some((e) => !e)) return
-  const target = new Date('2026-10-26T23:59:59+07:00').getTime()
+  const target = new Date('2026-11-26T00:00:00+07:00').getTime()
   const pad = (n) => String(n).padStart(2, '0')
   const parts = () => {
     const s = Math.floor(Math.max(target - Date.now(), 0) / 1000)
@@ -299,21 +298,152 @@ function initFAQ() {
   })
 }
 
-/* 10. GLOW KURSOR — desktop saja; hanya set CSS variable (transform, bukan left/top) */
+/* 10. GLOW TITIK — sorot titik hanya selama pointer digeser di hero */
 function initPointerGlow() {
-  const bg = $('.hero-bg')
-  if (!bg || isTouch || reduceMotion) return
-  let raf = 0, x = 0, y = 0
-  addEventListener('pointermove', (e) => {
-    x = e.clientX
-    y = e.clientY
+  const hero = $('#hero'), dots = $('.dot-grid')
+  if (!hero || !dots || reduceMotion) return
+  let raf = 0, x = 0, y = 0, dragging = false
+  const update = () => {
     if (raf) return
     raf = requestAnimationFrame(() => {
       raf = 0
-      bg.style.setProperty('--mx', `${(x / innerWidth - 0.5) * 400}px`)
-      bg.style.setProperty('--my', `${(y / innerHeight - 0.5) * 300}px`)
+      const rect = dots.getBoundingClientRect()
+      dots.style.setProperty('--mx', `${x - rect.left}px`)
+      dots.style.setProperty('--my', `${y - rect.top}px`)
     })
+  }
+  document.addEventListener('pointerdown', (e) => {
+    if (!(e.target instanceof Element) || !e.target.closest('#hero')) return
+    dragging = true
+    hero.classList.add('is-dragging')
+    dots.classList.add('is-dragging')
+    x = e.clientX
+    y = e.clientY
+    update()
   }, { passive: true })
+  document.addEventListener('pointermove', (e) => {
+    if (!dragging) return
+    x = e.clientX
+    y = e.clientY
+    update()
+  }, { passive: true })
+  const stop = () => {
+    dragging = false
+    hero.classList.remove('is-dragging')
+    dots.classList.remove('is-dragging')
+  }
+  document.addEventListener('pointerup', stop, { passive: true })
+  document.addEventListener('pointercancel', stop, { passive: true })
+}
+
+/* 11. CUSTOM POINTER — hanya desktop dengan pointer presisi */
+function initCustomPointer() {
+  const desktopPointer = mq('(hover: hover) and (pointer: fine) and (min-width: 1025px)')
+  if (!desktopPointer.matches) return
+
+  const trail = document.createElement('div')
+  trail.className = 'cursor-trail'
+  trail.setAttribute('aria-hidden', 'true')
+  const cursor = document.createElement('div')
+  cursor.className = 'custom-pointer'
+  cursor.setAttribute('aria-hidden', 'true')
+  cursor.innerHTML = '<span class="custom-pointer__arrow">↗</span>'
+  document.body.append(trail, cursor)
+  document.body.classList.add('has-custom-pointer')
+
+  const hero = $('#hero')
+  const heroDots = $('.dot-grid')
+  const program = $('#program')
+  const programDots = $$('.program-dot-field i')
+  const registration = $('#registration')
+  const litDotTimers = new Map()
+  let frame = 0
+  let pointerX = -1000
+  let pointerY = -1000
+
+  const setPointerVars = (element, x, y) => {
+    const rect = element.getBoundingClientRect()
+    element.style.setProperty('--cursor-x', `${x - rect.left}px`)
+    element.style.setProperty('--cursor-y', `${y - rect.top}px`)
+  }
+
+  const update = () => {
+    frame = 0
+    trail.style.left = `${pointerX}px`
+    trail.style.top = `${pointerY}px`
+    cursor.style.left = `${pointerX}px`
+    cursor.style.top = `${pointerY}px`
+
+    const target = document.elementFromPoint(pointerX, pointerY)
+    if (!(target instanceof Element)) return
+
+    const interactive = target.closest('a, button, [role="button"], input, textarea, select, [contenteditable="true"]')
+    cursor.classList.toggle('is-link', Boolean(interactive && !interactive.matches('input, textarea, select, [contenteditable="true"]')))
+    cursor.classList.toggle('is-text', Boolean(target.closest('input, textarea, select, [contenteditable="true"]')))
+
+    const onGlass = Boolean(target.closest('.glass-panel'))
+    const texturedBackground = !onGlass
+
+    if (hero && heroDots) {
+      const inHero = texturedBackground && hero.contains(target)
+      hero.classList.toggle('is-cursor-near', inHero)
+      heroDots.classList.toggle('is-cursor-near', inHero)
+      if (inHero) setPointerVars(heroDots, pointerX, pointerY)
+    }
+
+    if (program) {
+      const inProgramBackground = texturedBackground && program.contains(target)
+      program.classList.toggle('is-cursor-near', inProgramBackground)
+      programDots.forEach((dot) => {
+        const rect = dot.getBoundingClientRect()
+        const distance = Math.hypot(pointerX - (rect.left + rect.width / 2), pointerY - (rect.top + rect.height / 2))
+        if (inProgramBackground && distance <= 100 && !dot.classList.contains('is-cursor-lit')) {
+          dot.classList.add('is-cursor-lit')
+          const timer = setTimeout(() => {
+            dot.classList.remove('is-cursor-lit')
+            litDotTimers.delete(dot)
+          }, 500)
+          litDotTimers.set(dot, timer)
+        }
+      })
+      if (inProgramBackground) setPointerVars(program, pointerX, pointerY)
+    }
+
+    if (registration) {
+      const inRegistration = texturedBackground && registration.contains(target)
+      registration.classList.toggle('is-cursor-near', inRegistration)
+      if (inRegistration) setPointerVars(registration, pointerX, pointerY)
+    }
+
+    trail.classList.toggle('is-background', texturedBackground && (
+      Boolean(hero && hero.contains(target)) ||
+      Boolean(program && program.contains(target)) ||
+      Boolean(registration && registration.contains(target))
+    ))
+  }
+
+  document.addEventListener('pointermove', (event) => {
+    if (event.pointerType !== 'mouse' && event.pointerType !== 'pen') return
+    pointerX = event.clientX
+    pointerY = event.clientY
+    if (!frame) frame = requestAnimationFrame(update)
+  }, { passive: true })
+
+  document.addEventListener('pointerleave', (event) => {
+    if (event.target !== document) return
+    cursor.classList.add('is-hidden')
+    trail.classList.add('is-hidden')
+  })
+
+  document.addEventListener('pointerenter', () => {
+    cursor.classList.remove('is-hidden')
+    trail.classList.remove('is-hidden')
+  })
+
+  window.addEventListener('blur', () => {
+    cursor.classList.add('is-hidden')
+    trail.classList.add('is-hidden')
+  })
 }
 
 function boot() {
@@ -321,6 +451,7 @@ function boot() {
   initAnchors(closeMenu)
   initFAQ()
   initScrollEffects()
+  initCustomPointer()
   initPreloader(() => {
     initLenis()
     initHero()

@@ -89,53 +89,21 @@
     <section class="hero" id="hero">
       <!-- Background decorative elements -->
       <div class="hero-bg" aria-hidden="true">
-        <div class="blob blob-1"></div>
-        <div class="blob blob-2"></div>
-        <div class="blob blob-3"></div>
-        <div class="ray ray-1"></div>
-        <div class="ray ray-2"></div>
-        <div class="dot-grid"></div>
+        <div class="dot-grid">
+        </div>
       </div>
 
       <div class="hero-grid">
         <!-- Left: Content -->
         <div class="hero-content">
           <h1 class="hero-headline">
-            <span class="hl-line" data-text="Ubah Masalah">Ubah Masalah</span>
-            <span class="hl-line accent-line" data-text="Jadi Solusi Digital!">Jadi Solusi Digital!</span>
+            <span class="hl-line accent-line" data-text="Ubah Masalah Jadi Solusi Digital!">Ubah Masalah Jadi <span
+                class="hero-accent-word">Solusi</span> Digital!</span>
           </h1>
-          <p class="hero-tagline">Saatnya Unjuk Karya dan Kembangkan Skill-mu di ISINDO.</p>
-          <p class="hero-sub">
+          <p class="hero-tagline">Saatnya Unjuk Karya dan Kembangkan Skill-mu di ISINDO.
             Event kolaborasi <strong>Lomba Desain Poster</strong> dan <strong>Seminar Hands-On</strong>
             khusus pelajar SMA/SMK!.
           </p>
-
-          <!-- Value Badges -->
-          <div class="value-badges">
-            <div class="vbadge">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                <polygon
-                  points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-              </svg>
-              Total Hadiah Jutaan Rupiah
-            </div>
-            <div class="vbadge">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                <rect x="3" y="4" width="18" height="16" rx="2" />
-                <path d="M16 2v4M8 2v4M3 10h18" />
-              </svg>
-              E-Sertifikat Resmi
-            </div>
-            <div class="vbadge">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                <circle cx="9" cy="7" r="4" />
-                <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
-              </svg>
-              Hands-On Bareng Praktisi
-            </div>
-          </div>
-
           <!-- CTA Buttons -->
           <div class="hero-cta-row">
             <a href="#program" class="btn-primary" id="heroCta">
@@ -145,32 +113,6 @@
               </svg>
             </a>
             <a href="#about" class="btn-ghost">Pelajari Event</a>
-          </div>
-
-          <!-- Countdown Timer -->
-          <div class="countdown-wrap">
-            <p class="cd-label">Pendaftaran Ditutup Dalam</p>
-            <div class="countdown" id="countdown">
-              <div class="cd-unit">
-                <span class="cd-num" id="cdDays">20</span>
-                <span class="cd-desc">Hari</span>
-              </div>
-              <span class="cd-sep">:</span>
-              <div class="cd-unit">
-                <span class="cd-num" id="cdHours">00</span>
-                <span class="cd-desc">Jam</span>
-              </div>
-              <span class="cd-sep">:</span>
-              <div class="cd-unit">
-                <span class="cd-num" id="cdMins">00</span>
-                <span class="cd-desc">Menit</span>
-              </div>
-              <span class="cd-sep">:</span>
-              <div class="cd-unit">
-                <span class="cd-num" id="cdSecs">00</span>
-                <span class="cd-desc">Detik</span>
-              </div>
-            </div>
           </div>
         </div>
 
@@ -190,7 +132,7 @@
                   <rect x="3" y="4" width="18" height="16" rx="2" />
                   <path d="M3 10h18M16 2v4M8 2v4" />
                 </svg>
-                5 November 2026
+                26 November 2026
               </div>
               <div class="hv-card-loc">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -198,6 +140,22 @@
                   <circle cx="12" cy="10" r="3" />
                 </svg>
                 Universitas Ma Chung, Malang
+              </div>
+              <div class="hv-programs">
+                <div class="hv-program">
+                  <span class="hv-program-index">01</span>
+                  <span class="hv-program-copy">
+                    <strong>Lomba Desain Poster</strong>
+                    <small>Tuangkan ide kreatifmu</small>
+                  </span>
+                </div>
+                <div class="hv-program">
+                  <span class="hv-program-index">02</span>
+                  <span class="hv-program-copy">
+                    <strong>Seminar Hands-On</strong>
+                    <small>Belajar langsung dari praktisi</small>
+                  </span>
+                </div>
               </div>
               <div class="hv-tags">
                 <span>#DesainPoster</span>
@@ -226,14 +184,37 @@
             </div>
           </div>
         </div>
+
+        <!-- Countdown Timer -->
+        <div class="countdown-wrap">
+          <p class="cd-label">Acara Dimulai Dalam</p>
+          <div class="countdown" id="countdown">
+            <div class="cd-unit">
+              <span class="cd-num" id="cdDays">20</span>
+              <span class="cd-desc">Hari</span>
+            </div>
+            <span class="cd-sep">:</span>
+            <div class="cd-unit">
+              <span class="cd-num" id="cdHours">00</span>
+              <span class="cd-desc">Jam</span>
+            </div>
+            <span class="cd-sep">:</span>
+            <div class="cd-unit">
+              <span class="cd-num" id="cdMins">00</span>
+              <span class="cd-desc">Menit</span>
+            </div>
+            <span class="cd-sep">:</span>
+            <div class="cd-unit">
+              <span class="cd-num" id="cdSecs">00</span>
+              <span class="cd-desc">Detik</span>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Scroll indicator -->
       <div class="scroll-hint" aria-hidden="true">
-        <div class="scroll-mouse">
-          <div class="scroll-wheel"></div>
-        </div>
-        <span>Scroll</span>
+        <span class="scroll-led"><i></i><i></i><i></i></span>
       </div>
     </section>
 
@@ -242,7 +223,6 @@
       <div class="section-container">
         <div class="about-grid">
           <div class="about-left">
-            <div class="section-label reveal-el">Tentang Event</div>
             <h2 class="section-title reveal-el">
               Transforming Problems<br />
               <em class="text-accent">into Digital Solutions</em>
@@ -304,9 +284,12 @@
     <section class="program" id="program">
       <!-- Background accent -->
       <div class="section-blob" aria-hidden="true"></div>
+      <div class="program-dot-field" aria-hidden="true">
+        <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+        <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+      </div>
       <div class="section-container">
         <div class="section-header centered reveal-el">
-          <div class="section-label">Track Program</div>
           <h2 class="section-title">Pilih Jalurmu,<br /><em class="text-accent">Raih Prestasimu</em></h2>
           <p class="section-desc">Dua jalur event berbeda, satu tujuan: Mengembangkan dirimu di dunia digital.</p>
         </div>
@@ -412,65 +395,33 @@
     <section class="speaker" id="speaker">
       <div class="section-container">
         <div class="section-header centered reveal-el">
-          <div class="section-label">Speaker Spotlight</div>
           <h2 class="section-title">Belajar dari<br /><em class="text-accent">Praktisi Terbaik</em></h2>
         </div>
 
         <div class="speaker-grid">
-          <!-- Speaker Placeholder (Guest Speaker) -->
           <div class="speaker-card glass-panel reveal-el">
-            <div class="spk-avatar-wrap">
-              <div class="spk-avatar-blur"></div>
-              <div class="spk-avatar-ring"></div>
-              <svg class="spk-avatar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+            <div class="speaker-photo" role="img" aria-label="Area foto praktisi ISINDO">
+              <svg class="spk-avatar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8"
+                aria-hidden="true">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                 <circle cx="12" cy="7" r="4" />
               </svg>
-            </div>
-            <div class="spk-info">
-              <div class="spk-status-badge">
-                <span class="status-dot"></span>
-                Stay Tuned
+              <div class="spk-photo-caption">
+                <span class="spk-status-badge">
+                  <span class="status-dot"></span>
+                  Praktisi ISINDO
+                </span>
+                <p class="spk-reveal-hint">Foto dan profil praktisi akan segera diumumkan</p>
               </div>
-              <p class="spk-reveal-hint">Akan segera diumumkan</p>
             </div>
-          </div>
-
-          <!-- Session Highlight Card -->
-          <div class="speaker-highlight glass-panel reveal-el" style="--delay:0.3s">
-            <div class="sh-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                <polygon points="5 3 19 12 5 21 5 3" />
-              </svg>
+            <div class="speaker-info">
+              <ol class="sh-list">
+                <li><span class="sh-number">01</span><span>Alur ideasi produk digital</span></li>
+                <li><span class="sh-number">02</span><span>Rancangan awal desain aplikasi</span></li>
+                <li><span class="sh-number">03</span><span>Problem-solving methodology</span></li>
+                <li><span class="sh-number">04</span><span>Praktik langsung bersama mentor</span></li>
+              </ul>
             </div>
-            <h3 class="sh-title">Sesi Highlight</h3>
-            <p class="sh-desc">Materi praktis yang akan dipraktikkan langsung saat seminar:</p>
-            <ul class="sh-list">
-              <li>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
-                Alur ideasi produk digital
-              </li>
-              <li>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
-                Rancangan awal desain aplikasi
-              </li>
-              <li>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
-                Problem-solving methodology
-              </li>
-              <li>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
-                Praktik langsung bersama mentor
-              </li>
-            </ul>
           </div>
         </div>
       </div>
@@ -480,7 +431,6 @@
     <section class="timeline-section" id="timeline">
       <div class="section-container">
         <div class="section-header centered reveal-el">
-          <div class="section-label">Jadwal Acara</div>
           <h2 class="section-title">Timeline<br /><em class="text-accent">ISINDO 2026</em></h2>
         </div>
 
@@ -549,7 +499,7 @@
             <div class="tl-dot"><span>04</span></div>
             <div class="tl-card glass-panel tl-highlight-card">
               <div class="tl-main-badge">Main Event</div>
-              <div class="tl-date highlight-date">5 November 2026</div>
+              <div class="tl-date highlight-date">26 November 2026</div>
               <h3 class="tl-event">Grand Final & Seminar ISINDO</h3>
               <p class="tl-desc">Puncak acara! Grand Final Lomba Poster dan Seminar Hands-On langsung di Universitas Ma
                 Chung, Malang.</p>
@@ -567,9 +517,19 @@
 
     <!-- ── REGISTRATION STEPS ── -->
     <section class="registration" id="registration">
+      <svg class="registration-v-animation" viewBox="0 0 1200 700" preserveAspectRatio="none" aria-hidden="true">
+        <g class="registration-v-desktop">
+          <path d="M40 40L280 350" /><path d="M40 660L280 350" />
+          <path d="M420 40L660 350" /><path d="M420 660L660 350" />
+          <path d="M800 40L1040 350" /><path d="M800 660L1040 350" />
+        </g>
+        <g class="registration-v-mobile">
+          <path d="M40 60L600 350" /><path d="M1160 60L600 350" />
+          <path d="M40 260L600 550" /><path d="M1160 260L600 550" />
+        </g>
+      </svg>
       <div class="section-container">
         <div class="section-header centered reveal-el">
-          <div class="section-label">Cara Pendaftaran</div>
           <h2 class="section-title">3 Langkah<br /><em class="text-accent">Mudah Daftar</em></h2>
         </div>
 
@@ -638,7 +598,6 @@
       <div class="section-container">
         <div class="faq-grid">
           <div class="faq-left">
-            <div class="section-label reveal-el">FAQ</div>
             <h2 class="section-title reveal-el">Pertanyaan yang<br /><em class="text-accent">Sering Ditanya</em></h2>
 
             <div class="faq-list" id="faqList">

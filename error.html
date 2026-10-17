@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#010610" />
+  <meta name="description" content="Halaman informasi gangguan ISINDO 2026." />
+  <title>Terjadi kendala — ISINDO 2026</title>
+  <link rel="icon" href="/src/asets/favicon.png" type="image/png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+
+<body class="error-page">
+  <main class="error-main" aria-labelledby="errorTitle">
+    <a class="error-brand" href="/" aria-label="ISINDO — kembali ke halaman utama">
+      <img src="/src/asets/LOGO_ISINDO.webp" width="303" height="498" alt="" />
+      <span>ISINDO</span>
+    </a>
+
+    <section class="error-card glass-panel" aria-live="polite">
+      <div class="error-orbit error-orbit-one" aria-hidden="true"></div>
+      <div class="error-orbit error-orbit-two" aria-hidden="true"></div>
+      <div class="error-content">
+        <span class="error-eyebrow"><span></span> ISINDO 2026 · SYSTEM NOTICE</span>
+        <p class="error-code" id="errorCode">404</p>
+        <h1 id="errorTitle">Halaman tidak ditemukan</h1>
+        <p class="error-message" id="errorMessage">
+          Halaman yang kamu cari mungkin sudah dipindahkan atau alamatnya tidak tepat.
+        </p>
+        <div class="error-actions">
+          <a class="btn-primary" href="/">
+            Kembali ke Beranda
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
+          </a>
+          <button class="btn-ghost error-retry" id="errorRetry" type="button">Coba Lagi</button>
+        </div>
+        <span class="error-footer">Transforming Problems into Digital Solutions</span>
+      </div>
+    </section>
+
+    <a class="error-back-link" href="/">← Kembali ke situs ISINDO</a>
+  </main>
+  <script type="module" src="/src/error.js"></script>
+</body>
+
+</html>

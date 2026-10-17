@@ -189,10 +189,10 @@ button {
 }
 
 .cursor-trail {
-  width: 210px;
-  height: 210px;
+  width: min(250px, 50vw);
+  height: min(250px, 50vw);
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(47, 137, 255, 0.13) 0%, rgba(36, 116, 235, 0.07) 36%, transparent 72%);
+  background: radial-gradient(circle, rgba(47, 137, 255, 0.15) 0%, rgba(36, 116, 235, 0.08) 40%, transparent 72%);
   opacity: 0;
   transform: translate(-50%, -50%);
   transition: left 180ms ease-out, top 180ms ease-out, opacity 180ms ease-out;
@@ -1344,7 +1344,7 @@ button {
   z-index: 0;
   pointer-events: none;
   opacity: 0;
-  background: radial-gradient(circle 110px at var(--cursor-x, -200px) var(--cursor-y, -200px), rgba(24, 113, 235, 0.16), transparent 100%);
+  background: radial-gradient(circle 125px at var(--cursor-x, -200px) var(--cursor-y, -200px), rgba(24, 113, 235, 0.16), transparent 100%);
   transition: opacity 180ms ease;
 }
 
@@ -1957,7 +1957,7 @@ button {
   z-index: 0;
   pointer-events: none;
   opacity: 0;
-  background: radial-gradient(circle 110px at var(--cursor-x, -200px) var(--cursor-y, -200px), rgba(24, 113, 235, 0.16), transparent 100%);
+  background: radial-gradient(circle 125px at var(--cursor-x, -200px) var(--cursor-y, -200px), rgba(24, 113, 235, 0.16), transparent 100%);
   transition: opacity 180ms ease;
 }
 
@@ -3308,7 +3308,7 @@ body {
   }
 }
 
-@media (hover: hover) and (pointer: fine) and (min-width: 1025px) {
+@media (hover: hover) and (pointer: fine) {
   .cursor-trail,
   .custom-pointer {
     display: block;

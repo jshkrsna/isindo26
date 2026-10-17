@@ -338,8 +338,8 @@ function initPointerGlow() {
 
 /* 11. CUSTOM POINTER — hanya desktop dengan pointer presisi */
 function initCustomPointer() {
-  const desktopPointer = mq('(hover: hover) and (pointer: fine) and (min-width: 1025px)')
-  if (!desktopPointer.matches) return
+  const precisePointer = mq('(hover: hover) and (pointer: fine)')
+  if (!precisePointer.matches) return
 
   const trail = document.createElement('div')
   trail.className = 'cursor-trail'
@@ -360,6 +360,24 @@ function initCustomPointer() {
   let frame = 0
   let pointerX = -1000
   let pointerY = -1000
+  let hasPointerPosition = false
+
+  const showPointer = () => {
+    cursor.classList.remove('is-hidden')
+    trail.classList.remove('is-hidden')
+  }
+  const hidePointer = () => {
+    cursor.classList.add('is-hidden')
+    trail.classList.add('is-hidden')
+  }
+  const scheduleUpdate = () => {
+    if (!frame) frame = requestAnimationFrame(update)
+  }
+  const restorePointer = () => {
+    if (!hasPointerPosition || document.hidden || !document.hasFocus()) return
+    showPointer()
+    scheduleUpdate()
+  }
 
   const setPointerVars = (element, x, y) => {
     const rect = element.getBoundingClientRect()
@@ -375,13 +393,16 @@ function initCustomPointer() {
     cursor.style.top = `${pointerY}px`
 
     const target = document.elementFromPoint(pointerX, pointerY)
-    if (!(target instanceof Element)) return
-
+    if (!(target instanceof Element)) {
+      trail.classList.remove('is-background')
+      return
+    }
     const interactive = target.closest('a, button, [role="button"], input, textarea, select, [contenteditable="true"]')
     cursor.classList.toggle('is-link', Boolean(interactive && !interactive.matches('input, textarea, select, [contenteditable="true"]')))
     cursor.classList.toggle('is-text', Boolean(target.closest('input, textarea, select, [contenteditable="true"]')))
 
     const onGlass = Boolean(target.closest('.glass-panel'))
+    trail.classList.toggle('is-background', !onGlass && !interactive)
     const texturedBackground = !onGlass
 
     if (hero && heroDots) {
@@ -415,35 +436,35 @@ function initCustomPointer() {
       if (inRegistration) setPointerVars(registration, pointerX, pointerY)
     }
 
-    trail.classList.toggle('is-background', texturedBackground && (
-      Boolean(hero && hero.contains(target)) ||
-      Boolean(program && program.contains(target)) ||
-      Boolean(registration && registration.contains(target))
-    ))
   }
 
   document.addEventListener('pointermove', (event) => {
     if (event.pointerType !== 'mouse' && event.pointerType !== 'pen') return
     pointerX = event.clientX
     pointerY = event.clientY
-    if (!frame) frame = requestAnimationFrame(update)
+    hasPointerPosition = true
+    showPointer()
+    scheduleUpdate()
   }, { passive: true })
 
   document.addEventListener('pointerleave', (event) => {
     if (event.target !== document) return
-    cursor.classList.add('is-hidden')
-    trail.classList.add('is-hidden')
+    hidePointer()
   })
 
-  document.addEventListener('pointerenter', () => {
-    cursor.classList.remove('is-hidden')
-    trail.classList.remove('is-hidden')
+  document.addEventListener('pointerenter', (event) => {
+    if (event.pointerType !== 'mouse' && event.pointerType !== 'pen') return
+    pointerX = event.clientX
+    pointerY = event.clientY
+    hasPointerPosition = true
+    showPointer()
+    scheduleUpdate()
   })
 
-  window.addEventListener('blur', () => {
-    cursor.classList.add('is-hidden')
-    trail.classList.add('is-hidden')
-  })
+  window.addEventListener('blur', hidePointer)
+  window.addEventListener('focus', restorePointer)
+  window.addEventListener('pageshow', restorePointer)
+  document.addEventListener('visibilitychange', restorePointer)
 }
 
 function boot() {

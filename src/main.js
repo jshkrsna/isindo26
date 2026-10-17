@@ -15,29 +15,15 @@ const reduceMotion = mq('(prefers-reduced-motion: reduce)').matches
 const isTouch = mq('(hover: none), (pointer: coarse)').matches
 let lenis = null
 
-/* 1. PRELOADER — progres via transform (tanpa layout), durasi adaptif */
+/* 1. PRELOADER — progres acak bertahap via transform, durasi tetap 2,5 detik */
 function initPreloader(onDone) {
   const pre = $('#preloader'), bar = $('#plBar'), pct = $('#plPct')
   if (!pre || !bar) return onDone()
 
   document.body.classList.add('is-loading')
-  let loaded = document.readyState === 'complete'
-  if (!loaded) addEventListener('load', () => (loaded = true), { once: true })
-
-  const connection = navigator.connection
-  const capableDevice = navigator.hardwareConcurrency >= 4 && navigator.deviceMemory >= 4
-  const capableConnection = !connection || (
-    !connection.saveData &&
-    !['slow-2g', '2g', '3g'].includes(connection.effectiveType) &&
-    (connection.downlink == null || connection.downlink >= 1.5)
-  )
-  const min = reduceMotion ? 0 : capableDevice && capableConnection ? 3000 : isTouch ? 1100 : 1800
-  const progressWeights = Array.from({ length: 8 }, () => 0.35 + Math.random())
-  const progressTotal = progressWeights.reduce((sum, weight) => sum + weight, 0)
-  const progressStops = [0]
-  progressWeights.forEach((weight) => {
-    progressStops.push(progressStops[progressStops.length - 1] + weight / progressTotal)
-  })
+  const duration = reduceMotion ? 0 : 2500
+  const fastPhaseDuration = 1500
+  const fastPhaseTarget = 78 + Math.floor(Math.random() * 13)
   const t0 = performance.now()
   let shown = -1
 
@@ -51,14 +37,13 @@ function initPreloader(onDone) {
     gsap.to(pre, { yPercent: -105, duration: 0.7, ease: 'power3.inOut', onComplete: end })
   }
   const step = (now) => {
-    if (now - t0 > min + 4000) loaded = true // jaringan lambat: jangan menahan halaman
-    const t = min ? clamp((now - t0) / min, 0, 1) : 1
-    const progressPosition = t * progressWeights.length
-    const progressIndex = Math.min(Math.floor(progressPosition), progressWeights.length - 1)
-    const progressFraction = t >= 1 ? 1 : progressPosition - progressIndex
-    const progress = progressStops[progressIndex] +
-      (progressStops[progressIndex + 1] - progressStops[progressIndex]) * progressFraction
-    const p = loaded && t >= 1 ? 100 : Math.min(95, Math.round(progress * 100))
+    const elapsed = now - t0
+    const t = duration ? clamp(elapsed / duration, 0, 1) : 1
+    const progress = duration === 0 ? 100 : t <= fastPhaseDuration / duration
+      ? fastPhaseTarget * (elapsed / fastPhaseDuration)
+      : fastPhaseTarget + (100 - fastPhaseTarget) *
+        ((elapsed - fastPhaseDuration) / (duration - fastPhaseDuration))
+    const p = t === 1 ? 100 : Math.min(99, Math.floor(progress))
     if (p !== shown) {
       shown = p
       bar.style.transform = `scaleX(${p / 100})`
@@ -473,9 +458,9 @@ function boot() {
   initFAQ()
   initScrollEffects()
   initCustomPointer()
+  initHero()
   initPreloader(() => {
     initLenis()
-    initHero()
     initReveal()
     initCountdown()
     initPointerGlow()

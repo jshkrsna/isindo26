@@ -643,7 +643,11 @@ button {
 .preloader-bg {
   position: absolute;
   inset: 0;
-  background: var(--bg-depth);
+  background-color: var(--bg-depth);
+  background-image:
+    radial-gradient(rgba(150, 160, 174, 0.24) 0.8px, transparent 1px),
+    radial-gradient(ellipse at 50% 45%, rgba(24, 48, 78, 0.3), transparent 68%);
+  background-size: 18px 18px, 100% 100%;
 }
 
 .preloader-inner {
